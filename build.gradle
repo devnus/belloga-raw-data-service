@@ -63,6 +63,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.5.RELEASE'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
 }
 
 openapi3 {

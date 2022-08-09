@@ -1,4 +1,10 @@
 spring:
+  # 파일 사이즈 지정
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 100MB
+
   h2:
     console:
       enabled: true
@@ -37,3 +43,15 @@ spring:
 
 app:
   topic:
+
+## aws S3 관련 정보
+cloud:
+  aws:
+    s3:
+      bucket: belloga-dev-s3-raw-data-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true

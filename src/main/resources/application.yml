@@ -1,4 +1,4 @@
 spring:
   profiles:
     include:
-      - aws # application-aws.yml을 추가한다.
+      - aws # application-aws.yml

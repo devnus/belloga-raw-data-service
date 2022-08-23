@@ -33,10 +33,10 @@ spring:
 
   kafka:
     producer:
-      bootstrap-servers: 13.209.250.13:9092
+      bootstrap-servers: localhost:9092
     consumer:
       auto-offset-reset: earliest
-      bootstrap-servers: 13.209.250.13:9092
+      bootstrap-servers: localhost:9092
       enable-auto-commit: true
 
 app:

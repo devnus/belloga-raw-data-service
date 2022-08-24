@@ -49,6 +49,27 @@ pipeline {
                 }
             }
         }
+        stage('create application-aws') {
+            steps {
+                dir('src/main/resources') {
+				withAWSParameterStore(credentialsId: "${env.AWS_CREDENTIAL_NAME}",
+              				path: "/belloga/raw-data/aws/local",
+              				naming: 'basename',
+              				regionName: 'ap-northeast-2') {
+
+                        writeFile file: 'application-aws.yml', text: "${env.KEY}"
+                    }
+			    }
+            }
+            post {
+                success {
+                    echo 'success create application-aws'
+                }
+                failure {
+                    error 'fail create application-aws'
+                }
+            }
+        }
         stage('build project') {
             steps {
                 sh '''

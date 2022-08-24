@@ -63,8 +63,6 @@ dependencies {
 	testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.5.RELEASE'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
-	implementation 'io.findify:s3mock_2.12:0.2.5' //0.2.6 버전에 버그
-	//testImplementation 'org.springframework.boot:spring-boot-test:2.7.1'
 }
 
 openapi3 {

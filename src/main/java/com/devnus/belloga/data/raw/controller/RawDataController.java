@@ -21,6 +21,9 @@ public class RawDataController {
 
     private final RawDataService rawDataService;
 
+    /**
+     * 기업사용자가 라벨링을 의뢰할 Raw를 업로드
+     */
     @PostMapping("/v1/upload")
     @ResponseBody
     public ResponseEntity<CommonResponse> uploadRawData(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @RequestPart("upload") MultipartFile multipartFile) {

@@ -1,0 +1,15 @@
+[[upload-raw-data]]
+== Raw 데이터 업로드 API
+기업 사용자가 Raw 데이터를 업로드 합니다.
+
+====== 요청 형식
+include::{snippets}/upload-raw-data/http-request.adoc[]
+====== Request Body
+include::{snippets}/upload-raw-data/request-body.adoc[]
+====== 응답 형식
+include::{snippets}/upload-raw-data/http-response.adoc[]
+include::{snippets}/upload-raw-data/response-fields.adoc[]
+====== Response Body
+include::{snippets}/upload-raw-data/response-body.adoc[]
+====== Try with curl
+include::{snippets}/upload-raw-data/curl-request.adoc[]

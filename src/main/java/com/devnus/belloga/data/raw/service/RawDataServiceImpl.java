@@ -20,7 +20,7 @@ public class RawDataServiceImpl implements RawDataService{
     private final RawDataProducer rawDataProducer;
 
     /**
-     * S3에 Raw 데이터를 저장한다
+     * S3에 Raw 데이터를 업로드하고, DB에 해당 Raw데이터의 정보를 저장 및 데이터 전처리 마이크로서비스로 비동기 전달
      */
     @Override
     @Transactional

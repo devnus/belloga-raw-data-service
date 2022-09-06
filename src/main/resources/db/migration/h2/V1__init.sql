@@ -5,3 +5,12 @@ CREATE TABLE raw_data (
     is_agreed BOOLEAN NOT NULL,
     data_type VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE project (
+    project_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    is_agreed BOOLEAN NOT NULL,
+    enterprise_id VARCHAR(255) NOT NULL,
+    zip_url VARCHAR(255) NOT NULL,
+    data_type VARCHAR(255) NOT NULL
+);

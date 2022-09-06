@@ -63,6 +63,7 @@ dependencies {
 	testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.5.RELEASE'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
+	implementation 'commons-io:commons-io:2.8.0'
 }
 
 openapi3 {

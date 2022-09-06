@@ -1,0 +1,15 @@
+[[register-project]]
+== 프로젝트 등록 API
+기업 사용자가 프로젝트 등록과 함께 zip파일을 업로드
+
+====== 요청 형식
+include::{snippets}/register-project/http-request.adoc[]
+====== Request Parts
+include::{snippets}/register-project/request-parts.adoc[]
+====== 응답 형식
+include::{snippets}/register-project/http-response.adoc[]
+include::{snippets}/register-project/response-fields.adoc[]
+====== Response Body
+include::{snippets}/register-project/response-body.adoc[]
+====== Try with curl
+include::{snippets}/register-project/curl-request.adoc[]

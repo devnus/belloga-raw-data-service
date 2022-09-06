@@ -12,3 +12,4 @@
 API 명세서 index.html이다.
 
 include::upload-raw-data.adoc[]
+include::register-project.adoc[]

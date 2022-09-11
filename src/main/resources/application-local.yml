@@ -49,6 +49,7 @@ cloud:
   aws:
     s3:
       bucket: belloga-dev-s3-raw-data-bucket
+      unzip-bucket: belloga-dev-s3-unzip-bucket
     region:
       static: ap-northeast-2
     stack:

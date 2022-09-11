@@ -19,7 +19,7 @@ spring:
   flyway:
     enabled: true
     baselineOnMigrate: true
-    locations: classpath:db/migration/{vendor},classpath:db/seed/local # when you want to give test seed, add location test seed too
+    locations: classpath:db/migration/{vendor},classpath:db/seed/test # when you want to give test seed, add location test seed too
 
   jpa:
     show-sql: true
@@ -49,6 +49,7 @@ cloud:
   aws:
     s3:
       bucket: belloga-dev-s3-raw-data-bucket
+      unzip-bucket: belloga-dev-s3-unzip-bucket
     region:
       static: ap-northeast-2
     stack:

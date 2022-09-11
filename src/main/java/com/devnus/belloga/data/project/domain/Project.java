@@ -26,6 +26,9 @@ public class Project {
     @Column(name = "enterprise_id")
     private String enterpriseId;
 
+    @Column(name = "zip_uuid")
+    private String zipUUID;
+
     @Column(name = "zip_url")
     private String zipUrl;
 
@@ -33,12 +36,17 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private DataType dataType;
 
+    public void agree(){
+        this.isAgreed = true;
+    }
+
     @Builder
-    public Project(String name, String enterpriseId, String zipUrl, DataType dataType) {
+    public Project(String name, String enterpriseId, String zipUUID, String zipUrl, DataType dataType) {
         this.name = name;
         this.enterpriseId = enterpriseId;
         this.zipUrl = zipUrl;
         this.dataType = dataType;
         this.isAgreed = false;
+        this.zipUUID = zipUUID;
     }
 }

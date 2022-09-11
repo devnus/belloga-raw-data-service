@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     S3_UPLOAD_FAILED_EXCEPTION(HttpStatus.FAILED_DEPENDENCY, "RAW_DATA_001", "S3_UPLOAD_FAILED"),
-    INVALID_EXTENSION_EXCEPTION(HttpStatus.BAD_REQUEST, "RAW_DATA_002", "INVALID_EXTENSION");
+    INVALID_EXTENSION_EXCEPTION(HttpStatus.BAD_REQUEST, "PROJECT_001", "INVALID_EXTENSION"),
+    NOT_FOUND_PROJECT_EXCEPTION(HttpStatus.BAD_REQUEST, "PROJECT_002", "NOT_FOUND_PROJECT");
     private final String code;
     private final String message;
     private final HttpStatus status;

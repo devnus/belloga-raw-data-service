@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -31,17 +33,15 @@ public class S3Uploader {
 
     /**
      * upload 메서드를 통해 uploadFile을 S3 dirName 경로에 저장한다.
-     * @param uploadFile
-     * @param dirName
-     * @return 업로드된 파일의 S3 경로
+     * 랜덤 생성된 UUID, 업로드된 파일의 S3 경로 반환
      */
-    public String upload(MultipartFile uploadFile, String dirName) {
+    public List<String> upload(MultipartFile uploadFile, String dirName) {
         String fileType = uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().lastIndexOf("."));
         String randomName = UUID.randomUUID().toString() + fileType; // 파일 중복되지 않게 고유식별자 생성
 
         String fileName = dirName + "/" + randomName;
         String uploadImageUrl = putS3(uploadFile, fileName);
-        return uploadImageUrl;
+        return Arrays.asList(randomName, uploadImageUrl);
     }
 
     /**

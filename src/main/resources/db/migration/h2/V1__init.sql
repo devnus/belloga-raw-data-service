@@ -1,8 +1,9 @@
 CREATE TABLE raw_data (
     raw_data_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     enterprise_id VARCHAR(255) NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
-    is_agreed BOOLEAN NOT NULL,
+    file_url VARCHAR(255) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    project_id BIGINT NOT NULL,
     data_type VARCHAR(255) NOT NULL
 );
 
@@ -11,6 +12,7 @@ CREATE TABLE project (
     name VARCHAR(255) NOT NULL,
     is_agreed BOOLEAN NOT NULL,
     enterprise_id VARCHAR(255) NOT NULL,
+    zip_uuid VARCHAR(255) NOT NULL,
     zip_url VARCHAR(255) NOT NULL,
     data_type VARCHAR(255) NOT NULL
 );

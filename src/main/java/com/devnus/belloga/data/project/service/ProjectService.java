@@ -5,4 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ProjectService {
     boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject, MultipartFile multipartFile);
+    boolean agreeProject(RequestProject.ApproveProject approveProject);
 }

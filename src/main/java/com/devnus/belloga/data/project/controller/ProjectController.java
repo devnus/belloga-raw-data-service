@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -26,12 +23,29 @@ import javax.validation.Valid;
 public class ProjectController {
     private final ProjectService projectService;
 
+    /**
+     * 프로젝트 생성
+     */
     @PostMapping(value="/v1/project", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponse> registerProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @RequestPart(value="project") @Valid RequestProject.RegisterProject registerProject, @RequestPart(value="upload", required = true) MultipartFile multipartFile) {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(projectService.saveProject(enterpriseId, registerProject, multipartFile))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * 프로젝트 승인
+     */
+    @PostMapping("/v1/project/approve")
+    public ResponseEntity<CommonResponse> approveProject(@GetAccountIdentification(role = UserRole.ADMIN) String adminId, @RequestBody @Valid RequestProject.ApproveProject approveProject) {
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .response(projectService.agreeProject(approveProject))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

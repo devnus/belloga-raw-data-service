@@ -20,22 +20,26 @@ public class RawData {
     @Column(name = "enterprise_id")
     private String enterpriseId;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "project_id")
+    private Long projectId;
 
-    @Column(name = "is_agreed")
-    private boolean isAgreed;
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    @Column(name = "file_name")
+    private String fileName;
 
     @Column(name = "data_type")
     @Enumerated(EnumType.STRING)
     private DataType dataType;
 
     @Builder
-    public RawData(String enterpriseId, String imageUrl, DataType dataType) {
+    public RawData(String enterpriseId, String fileUrl, Long projectId, String fileName, DataType dataType) {
         this.enterpriseId = enterpriseId;
-        this.imageUrl = imageUrl;
-        this.isAgreed = false;
+        this.projectId = projectId;
+        this.fileUrl = fileUrl;
         this.dataType = dataType;
+        this.fileName = fileName;
     }
 
 }

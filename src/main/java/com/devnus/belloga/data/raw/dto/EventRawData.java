@@ -14,7 +14,9 @@ public class EventRawData {
     public static class uploadRawData {
         private String enterpriseId;
         private Long rawDataId;
-        private String imageUrl;
+        private Long projectId;
+        private String fileUrl;
+        private String fileName;
         private DataType dataType;
     }
 }

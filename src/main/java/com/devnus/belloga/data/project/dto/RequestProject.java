@@ -19,4 +19,13 @@ public class RequestProject {
         @NotNull
         private DataType dataType;
     }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ApproveProject {
+        @NotNull
+        private Long projectId;
+    }
 }

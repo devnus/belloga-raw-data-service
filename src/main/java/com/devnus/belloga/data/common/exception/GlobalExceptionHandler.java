@@ -3,6 +3,7 @@ package com.devnus.belloga.data.common.exception;
 import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.common.dto.ErrorResponse;
 import com.devnus.belloga.data.common.exception.error.InvalidExtensionException;
+import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
 import com.devnus.belloga.data.common.exception.error.S3UploadException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(S3UploadException.class)
     protected ResponseEntity<CommonResponse> handleInvalidAccountIdException(S3UploadException ex) {
         ErrorCode errorCode = ErrorCode.S3_UPLOAD_FAILED_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    /**
+     * ProjectId 의 프로젝트가 없을 때
+     */
+    @ExceptionHandler(NotFoundProjectException.class)
+    protected ResponseEntity<CommonResponse> handleInvalidAccountIdException(NotFoundProjectException ex) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_PROJECT_EXCEPTION;
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(errorCode.getStatus().value())

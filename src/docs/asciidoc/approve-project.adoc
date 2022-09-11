@@ -1,0 +1,15 @@
+[[approve-project]]
+== 프로젝트 승인 API
+관리자가 프로젝트를 승인합니다
+
+====== 요청 형식
+include::{snippets}/approve-project/http-request.adoc[]
+====== Request Body
+include::{snippets}/approve-project/request-body.adoc[]
+====== 응답 형식
+include::{snippets}/approve-project/http-response.adoc[]
+include::{snippets}/approve-project/response-fields.adoc[]
+====== Response Body
+include::{snippets}/approve-project/response-body.adoc[]
+====== Try with curl
+include::{snippets}/approve-project/curl-request.adoc[]

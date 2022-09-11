@@ -16,12 +16,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,6 +68,40 @@ class ProjectControllerTest {
                 //docs
                 .andDo(document("register-project",
                         requestParts(partWithName("upload").description("첨부 이미지"), partWithName("project").description("프로젝트 정보")),
+                        responseFields(
+                                fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
+                                fieldWithPath("dateTime").description("response time"),
+                                fieldWithPath("success").description("정상 응답 여부"),
+                                fieldWithPath("response").description("등록이 잘 되었는지에 대한 boolean"),
+                                fieldWithPath("error").description("error 발생 시 에러 정보")
+                        )
+                ))
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+    @Test
+    void approveProjectTest() throws Exception {
+
+        //given
+        String adminId = "test-admin";
+        Map<String, String> input = new HashMap<>();
+        input.put("projectId", "1");
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/project/v1/project/approve")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input))
+                        .header("admin-id", adminId) // 프로젝트를 승인하는 관리자의 id, api gateway에서 받아온다.
+                )
+                //then
+                .andExpect(status().isOk())
+                .andDo(print())
+
+                //docs
+                .andDo(document("approve-project",
+                        requestFields(
+                                fieldWithPath("projectId").description("승인하려는 프로젝트 id")
+                        ),
                         responseFields(
                                 fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
                                 fieldWithPath("dateTime").description("response time"),

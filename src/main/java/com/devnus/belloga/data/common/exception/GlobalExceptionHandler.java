@@ -2,6 +2,7 @@ package com.devnus.belloga.data.common.exception;
 
 import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.common.dto.ErrorResponse;
+import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
 import com.devnus.belloga.data.common.exception.error.InvalidExtensionException;
 import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
 import com.devnus.belloga.data.common.exception.error.S3UploadException;
@@ -73,4 +74,26 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    /**
+     * 사용자 정보를 요청하는 accountId가 유효하지 않은 accountId 일때
+     */
+    @ExceptionHandler(InvalidAccountIdException.class)
+    protected ResponseEntity<CommonResponse> handleInvalidAccountIdException(InvalidAccountIdException ex) {
+        ErrorCode errorCode = ErrorCode.INVALID_ACCOUNT_ID_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
 }

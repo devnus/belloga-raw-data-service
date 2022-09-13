@@ -13,3 +13,4 @@ API 명세서 index.html이다.
 
 include::register-project.adoc[]
 include::approve-project.adoc[]
+include::get-all-projects.adoc[]

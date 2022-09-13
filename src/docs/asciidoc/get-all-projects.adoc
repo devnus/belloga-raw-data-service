@@ -1,0 +1,15 @@
+[[api-get-all-project]]
+== 관리자의 프로젝트 조회 API
+관리자가 기업 사용자가 의뢰한 프로젝트를 조회합니다
+
+====== 요청 형식
+include::{snippets}/get-all-projects/http-request.adoc[]
+====== Request Body
+include::{snippets}/get-all-projects/request-body.adoc[]
+====== 응답 형식
+include::{snippets}/get-all-projects/http-response.adoc[]
+include::{snippets}/get-all-projects/response-fields.adoc[]
+====== Response Body
+include::{snippets}/get-all-projects/response-body.adoc[]
+====== Try with curl
+include::{snippets}/get-all-projects/curl-request.adoc[]

@@ -6,6 +6,7 @@ import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.project.dto.RequestProject;
 import com.devnus.belloga.data.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,20 @@ public class ProjectController {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(projectService.agreeProject(approveProject))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * 관리자가 기업이 생성한 프로젝트 리스트 조회
+     */
+    @GetMapping("/v1/project")
+    public ResponseEntity<CommonResponse> getProject(@GetAccountIdentification(role = UserRole.ADMIN) String adminId, Pageable pageable){
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .response(projectService.findProjects(pageable))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

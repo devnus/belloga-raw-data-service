@@ -21,7 +21,7 @@ public class Project {
     private String name;
 
     @Column(name = "is_agreed")
-    private boolean isAgreed;
+    private Boolean isAgreed;
 
     @Column(name = "enterprise_id")
     private String enterpriseId;

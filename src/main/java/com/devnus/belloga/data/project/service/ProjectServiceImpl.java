@@ -7,6 +7,7 @@ import com.devnus.belloga.data.common.util.S3Finder;
 import com.devnus.belloga.data.common.util.S3Uploader;
 import com.devnus.belloga.data.project.domain.Project;
 import com.devnus.belloga.data.project.dto.RequestProject;
+import com.devnus.belloga.data.project.dto.ResponseProject;
 import com.devnus.belloga.data.project.repository.ProjectRepository;
 import com.devnus.belloga.data.raw.domain.DataType;
 import com.devnus.belloga.data.raw.domain.RawData;
@@ -16,6 +17,8 @@ import com.devnus.belloga.data.raw.repository.RawDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final S3Uploader s3Uploader;
     private final S3Finder s3Finder;
     private final RawDataProducer rawDataProducer;
+    private final UserWebClient userWebClient;
 
     /**
      * project 생성하고, S3에 zip 파일 업로드
@@ -60,6 +64,9 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    /**
+     * 프로젝트 승인
+     */
     @Override
     public boolean agreeProject(RequestProject.ApproveProject approveProject){
         Project project = projectRepository.findById(approveProject.getProjectId()).orElseThrow(() -> new NotFoundProjectException());
@@ -88,5 +95,30 @@ public class ProjectServiceImpl implements ProjectService {
         project.agree();
 
         return true;
+    }
+
+    /**
+     * 기업 사용자가 업로드한 프로젝트를 조회
+     */
+    @Override
+    public Page<ResponseProject.getProject> findProjects(Pageable pageable) {
+        Page<Project> projects = projectRepository.findAll(pageable);
+
+        Page<ResponseProject.getProject> getProjects = projects.map((Project project) -> {
+
+            //enterpriseId로 동기 통신을 통해 기업 사용자 정보를 가져온다
+            String enterpriseName = userWebClient.getEnterpriseInfo(project.getEnterpriseId()).getName();
+
+            return ResponseProject.getProject.builder()
+                    .projectId(project.getId())
+                    .dataType(project.getDataType())
+                    .enterpriseName(enterpriseName)
+                    .name(project.getName())
+                    .zipUUID(project.getZipUUID())
+                    .zipUrl(project.getZipUrl())
+                    .isAgreed(project.getIsAgreed()).build();
+        });
+
+        return getProjects;
     }
 }

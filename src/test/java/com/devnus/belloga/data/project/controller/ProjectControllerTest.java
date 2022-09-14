@@ -166,4 +166,57 @@ class ProjectControllerTest {
                 ));
 
     }
+
+    @Test
+    void getMyProjectTest() throws Exception {
+
+        // given
+        String enterpriseId = "enterprise-account-id";
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/my")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("enterprise-id", enterpriseId)
+        )
+                .andExpect(status().isOk())
+                .andDo(print())
+
+                //docs
+                .andDo(document("get-my-projects",
+                        responseFields(
+                                fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
+                                fieldWithPath("dateTime").description("response time"),
+                                fieldWithPath("success").description("정상 응답 여부"),
+                                fieldWithPath("response.content.[].projectId").description("프로젝트 id"),
+                                fieldWithPath("response.content.[].name").description("프로젝트 이름"),
+                                fieldWithPath("response.content.[].isAgreed").description("프로젝트 승인 여부"),
+                                fieldWithPath("response.content.[].zipUUID").description("프로젝트 제출 zip uuid"),
+                                fieldWithPath("response.content.[].zipUrl").description("프로젝트 제출 zip url"),
+                                fieldWithPath("response.content.[].dataType").description("프로젝트 데이터 타입"),
+
+                                fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
+                                fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),
+                                fieldWithPath("response.pageable.sort.empty").description("페이징 처리 sort 정보"),
+                                fieldWithPath("response.pageable.pageNumber").description("page number"),
+                                fieldWithPath("response.pageable.pageSize").description("page size"),
+                                fieldWithPath("response.pageable.offset").description("page offset"),
+                                fieldWithPath("response.pageable.paged").description("paged"),
+                                fieldWithPath("response.pageable.unpaged").description("unpaged"),
+                                fieldWithPath("response.totalPages").description("total pages"),
+                                fieldWithPath("response.totalElements").description("total elements"),
+                                fieldWithPath("response.last").description("last"),
+                                fieldWithPath("response.numberOfElements").description("numberOfElements"),
+                                fieldWithPath("response.size").description("size"),
+                                fieldWithPath("response.sort.unsorted").description("unsorted"),
+                                fieldWithPath("response.sort.sorted").description("sorted"),
+                                fieldWithPath("response.sort.empty").description("empty"),
+                                fieldWithPath("response.number").description("number"),
+                                fieldWithPath("response.first").description("first"),
+                                fieldWithPath("response.empty").description("empty"),
+
+                                fieldWithPath("error").description("error 발생 시 에러 정보")
+                        )
+                ));
+
+    }
 }

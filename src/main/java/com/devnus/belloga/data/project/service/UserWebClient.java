@@ -28,7 +28,7 @@ public class UserWebClient {
                 .exchange()
                 .flatMap(res -> {
                     if(res.statusCode().value() != HttpStatus.OK.value()){
-                        throw new InvalidAccountIdException();
+                        return reactor.core.publisher.Mono.error(new InvalidAccountIdException());
                     }
                     return res.bodyToMono(CommonResponse.class);
 

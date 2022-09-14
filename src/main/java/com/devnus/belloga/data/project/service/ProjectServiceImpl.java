@@ -68,6 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 프로젝트 승인
      */
     @Override
+    @Transactional
     public boolean agreeProject(RequestProject.ApproveProject approveProject){
         Project project = projectRepository.findById(approveProject.getProjectId()).orElseThrow(() -> new NotFoundProjectException());
         List<ResponseS3.S3File> s3Files = s3Finder.findFiles("org", project.getZipUUID());
@@ -101,6 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 기업 사용자가 업로드한 프로젝트를 조회
      */
     @Override
+    @Transactional(readOnly = true)
     public Page<ResponseProject.getProject> findProjects(Pageable pageable) {
         Page<Project> projects = projectRepository.findAll(pageable);
 

@@ -65,4 +65,18 @@ public class ProjectController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * 기업 사용자가 자신이 생성한 프로젝트 리스트 조회
+     */
+    @GetMapping("/v1/project/my")
+    public ResponseEntity<CommonResponse> getMyProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, Pageable pageable){
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .response(projectService.findProjectsByEnterpriseId(pageable, enterpriseId))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

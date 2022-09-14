@@ -20,4 +20,17 @@ public class ResponseProject {
         private String zipUrl;
         private DataType dataType;
     }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getMyProject {
+        private Long projectId;
+        private String name;
+        private Boolean isAgreed;
+        private String zipUUID;
+        private String zipUrl;
+        private DataType dataType;
+    }
 }

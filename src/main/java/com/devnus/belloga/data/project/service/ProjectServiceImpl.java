@@ -99,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
-     * 기업 사용자가 업로드한 프로젝트를 조회
+     * 기업 사용자가 업로드한 모든 프로젝트를 조회
      */
     @Override
     @Transactional(readOnly = true)
@@ -120,6 +120,25 @@ public class ProjectServiceImpl implements ProjectService {
                     .zipUrl(project.getZipUrl())
                     .isAgreed(project.getIsAgreed()).build();
         });
+
+        return getProjects;
+    }
+
+    /**
+     * 기업 사용자 ID를 이용해 해당 기업 사용자가 업로드한 프로젝트 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ResponseProject.getMyProject> findProjectsByEnterpriseId(Pageable pageable, String enterpriseId){
+        Page<Project> projects = projectRepository.findByEnterpriseId(pageable, enterpriseId);
+
+        Page<ResponseProject.getMyProject> getProjects = projects.map((Project project) -> ResponseProject.getMyProject.builder()
+                .projectId(project.getId())
+                .dataType(project.getDataType())
+                .name(project.getName())
+                .zipUUID(project.getZipUUID())
+                .zipUrl(project.getZipUrl())
+                .isAgreed(project.getIsAgreed()).build());
 
         return getProjects;
     }

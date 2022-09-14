@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAll(Pageable pageable);
+    Page<Project> findByEnterpriseId(Pageable pageable, String enterpriseId);
 }
 

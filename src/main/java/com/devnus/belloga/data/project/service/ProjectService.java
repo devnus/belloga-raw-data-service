@@ -10,4 +10,5 @@ public interface ProjectService {
     boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject, MultipartFile multipartFile);
     boolean agreeProject(RequestProject.ApproveProject approveProject);
     Page<ResponseProject.getProject> findProjects(Pageable pageable);
+    Page<ResponseProject.getMyProject> findProjectsByEnterpriseId(Pageable pageable, String enterpriseId);
 }

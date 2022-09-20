@@ -85,7 +85,7 @@ pipeline {
                 }
             }
         }
-        /*
+
         stage('generate api docs by spring rest docs and send to swagger ui') {
             steps {
                 sh '''
@@ -112,7 +112,7 @@ pipeline {
                 }
             }
         }
-        */
+
         // 도커 이미지를 만든다. build number로 태그를 주되 latest 태그도 부여한다.
         stage('dockerizing project') {
             steps {

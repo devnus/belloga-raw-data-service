@@ -48,7 +48,7 @@ class ProjectControllerTest {
     void registerProjectTest() throws Exception {
 
         //given
-        String enterpriseId = "test-enterprise";
+        String enterpriseId = "enterprise-account-id";
         RequestProject.RegisterProject requestRegisterProject = RequestProject.RegisterProject.builder().dataType(DataType.OCR).name("test_project").build();
         MockMultipartFile registerProject = new MockMultipartFile("project", "project", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(requestRegisterProject).getBytes(StandardCharsets.UTF_8));
         //Mock zip 파일

@@ -65,6 +65,9 @@ dependencies {
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
 	implementation 'commons-io:commons-io:2.8.0'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-sleuth-zipkin', version: '3.1.4'   // zipkin
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-sleuth', version: '3.1.4'   // sleuth
 }
 
 openapi3 {

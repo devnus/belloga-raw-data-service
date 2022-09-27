@@ -1,5 +1,6 @@
 package com.devnus.belloga.data.project.domain;
 
+import com.devnus.belloga.data.common.domain.BaseTimeEntity;
 import com.devnus.belloga.data.raw.domain.DataType;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "project")
 @Getter
 @NoArgsConstructor
-public class Project {
+public class Project extends BaseTimeEntity {
     @Id
     @Column(name = "project_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

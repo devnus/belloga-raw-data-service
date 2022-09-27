@@ -1,5 +1,6 @@
 package com.devnus.belloga.data.raw.domain;
 
+import com.devnus.belloga.data.common.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "raw_data")
 @Getter
 @NoArgsConstructor
-public class RawData {
+public class RawData extends BaseTimeEntity {
 
     @Id
     @Column(name = "raw_data_id")

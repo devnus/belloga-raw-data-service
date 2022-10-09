@@ -40,3 +40,6 @@ src/main/resources/static/docs/
 
 ### aws secret ignore ###
 application-aws.yml
+
+### prod application ignore ###
+application-prod.yml

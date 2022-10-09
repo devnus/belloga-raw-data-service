@@ -70,6 +70,27 @@ pipeline {
                 }
             }
         }
+        stage('create application-prod') {
+            steps {
+                dir('src/main/resources') {
+				withAWSParameterStore(credentialsId: "${env.AWS_CREDENTIAL_NAME}",
+              				path: "/belloga/raw/application/profile",
+              				naming: 'basename',
+              				regionName: 'ap-northeast-2') {
+
+                        writeFile file: 'application-prod.yml', text: "${env.PROD}"
+                    }
+			    }
+            }
+            post {
+                success {
+                    echo 'success create application-prod'
+                }
+                failure {
+                    error 'fail create application-prod'
+                }
+            }
+        }
         stage('build project') {
             steps {
                 sh '''

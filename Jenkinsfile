@@ -74,7 +74,7 @@ pipeline {
             steps {
                 dir('src/main/resources') {
 				withAWSParameterStore(credentialsId: "${env.AWS_CREDENTIAL_NAME}",
-              				path: "/belloga/raw/application/profile",
+              				path: "/belloga/raw-data/application/profile",
               				naming: 'basename',
               				regionName: 'ap-northeast-2') {
 

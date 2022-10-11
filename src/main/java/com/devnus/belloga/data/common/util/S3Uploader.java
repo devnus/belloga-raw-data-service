@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipInputStream;
 
 
 /**
@@ -53,12 +54,13 @@ public class S3Uploader {
         deleteFile(key);
     }
 
-    private String putS3(MultipartFile uploadFile, String fileName) {
+    private String putS3(MultipartFile uploadFile, String fileName)  {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(uploadFile.getContentType());
-        metadata.setContentLength(uploadFile.getSize());
+        //metadata.setContentLength(uploadFile.getSize());
         try {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile.getInputStream(), metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+            ZipInputStream zipInputStream = new ZipInputStream(uploadFile.getInputStream());
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, zipInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
 
         }catch (IOException e) {
             throw new S3UploadException(e);

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -54,14 +55,15 @@ public class S3Uploader {
         deleteFile(key);
     }
 
-    private String putS3(MultipartFile uploadFile, String fileName)  {
+    private String putS3(MultipartFile multipartFile, String fileName)  {
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(uploadFile.getContentType());
-        //metadata.setContentLength(uploadFile.getSize());
+        metadata.setContentType(multipartFile.getContentType());
+        metadata.setContentLength(multipartFile.getSize());
         try {
-            ZipInputStream zipInputStream = new ZipInputStream(uploadFile.getInputStream());
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, zipInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
-
+            File file = new File(multipartFile.getOriginalFilename());
+            multipartFile.transferTo(file); // MultipartFile to File
+            amazonS3Client.putObject(bucket,fileName, file);
+            file.delete(); // S3 업로드 후, local zip 파일 삭제
         }catch (IOException e) {
             throw new S3UploadException(e);
         }

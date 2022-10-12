@@ -59,14 +59,16 @@ public class S3Uploader {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(multipartFile.getContentType());
         metadata.setContentLength(multipartFile.getSize());
-        File file = new File(multipartFile.getOriginalFilename());
         try {
+            File file = new File(multipartFile.getOriginalFilename());
             multipartFile.transferTo(file); // MultipartFile to File
-            amazonS3Client.putObject(bucket,fileName, file);
+            synchronized (this){
+                amazonS3Client.putObject(bucket,fileName, file); //S3에 업로드
+            }
+            file.delete(); // S3 업로드 후, local zip 파일 삭제
         }catch (IOException e) {
             throw new S3UploadException(e);
         }
-        file.delete(); // S3 업로드 후, local zip 파일 삭제
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 

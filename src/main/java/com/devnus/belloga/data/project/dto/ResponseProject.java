@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 public class ResponseProject {
     @Builder
     @Data
@@ -19,6 +21,7 @@ public class ResponseProject {
         private String zipUUID;
         private String zipUrl;
         private DataType dataType;
+        private String description;
     }
 
     @Builder
@@ -32,5 +35,7 @@ public class ResponseProject {
         private String zipUUID;
         private String zipUrl;
         private DataType dataType;
+        private LocalDateTime createdDate;
+        private String description;
     }
 }

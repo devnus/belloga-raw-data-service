@@ -49,7 +49,7 @@ class ProjectControllerTest {
 
         //given
         String enterpriseId = "enterprise-account-id";
-        RequestProject.RegisterProject requestRegisterProject = RequestProject.RegisterProject.builder().dataType(DataType.OCR).name("test_project").build();
+        RequestProject.RegisterProject requestRegisterProject = RequestProject.RegisterProject.builder().dataType(DataType.OCR).name("test_project").description("test_description").build();
         MockMultipartFile registerProject = new MockMultipartFile("project", "project", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(requestRegisterProject).getBytes(StandardCharsets.UTF_8));
         //Mock zip 파일
         MockMultipartFile mockMultipartFile = new MockMultipartFile("upload", "upload_file.zip", "application/zip", "test_data".getBytes());
@@ -193,6 +193,8 @@ class ProjectControllerTest {
                                 fieldWithPath("response.content.[].zipUUID").description("프로젝트 제출 zip uuid"),
                                 fieldWithPath("response.content.[].zipUrl").description("프로젝트 제출 zip url"),
                                 fieldWithPath("response.content.[].dataType").description("프로젝트 데이터 타입"),
+                                fieldWithPath("response.content.[].createdDate").description("프로젝트가 만들어진 시간"),
+                                fieldWithPath("response.content.[].description").description("프로젝트 설명"),
 
                                 fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
                                 fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),

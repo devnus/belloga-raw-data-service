@@ -58,6 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .dataType(registerProject.getDataType())
                 .enterpriseId(enterpriseId)
                 .name(registerProject.getName())
+                .description(registerProject.getDescription())
                 .zipUUID(zipUUID)
                 .zipUrl(zipUrl).build());
 
@@ -118,6 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .name(project.getName())
                     .zipUUID(project.getZipUUID())
                     .zipUrl(project.getZipUrl())
+                    .description(project.getDescription())
                     .isAgreed(project.getIsAgreed()).build();
         });
 
@@ -138,6 +140,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .name(project.getName())
                 .zipUUID(project.getZipUUID())
                 .zipUrl(project.getZipUrl())
+                .description(project.getDescription())
+                .createdDate(project.getCreatedDate())
                 .isAgreed(project.getIsAgreed()).build());
 
         return getProjects;

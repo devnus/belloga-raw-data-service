@@ -18,6 +18,8 @@ public class RequestProject {
         private String name;
         @NotNull
         private DataType dataType;
+        @NotNull
+        private String description;
     }
 
     @Builder

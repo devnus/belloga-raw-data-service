@@ -37,17 +37,21 @@ public class Project extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private DataType dataType;
 
+    @Column(name = "description")
+    private String description;
+
     public void agree(){
         this.isAgreed = true;
     }
 
     @Builder
-    public Project(String name, String enterpriseId, String zipUUID, String zipUrl, DataType dataType) {
+    public Project(String name, String enterpriseId, String zipUUID, String zipUrl, DataType dataType, String description) {
         this.name = name;
         this.enterpriseId = enterpriseId;
         this.zipUrl = zipUrl;
         this.dataType = dataType;
         this.isAgreed = false;
         this.zipUUID = zipUUID;
+        this.description = description;
     }
 }

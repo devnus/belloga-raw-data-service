@@ -1,12 +1,14 @@
 package com.devnus.belloga.data.project.service;
 
 import com.devnus.belloga.data.common.dto.ResponseS3;
+import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
 import com.devnus.belloga.data.common.exception.error.InvalidExtensionException;
 import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
 import com.devnus.belloga.data.common.util.S3Finder;
 import com.devnus.belloga.data.common.util.S3Uploader;
 import com.devnus.belloga.data.project.domain.Project;
 import com.devnus.belloga.data.project.dto.RequestProject;
+import com.devnus.belloga.data.project.dto.ResponseLabeling;
 import com.devnus.belloga.data.project.dto.ResponseProject;
 import com.devnus.belloga.data.project.repository.ProjectRepository;
 import com.devnus.belloga.data.raw.domain.DataType;
@@ -35,6 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final S3Finder s3Finder;
     private final RawDataProducer rawDataProducer;
     private final UserWebClient userWebClient;
+    private final LabelingWebClient labelingWebClient;
 
     /**
      * project 생성하고, S3에 zip 파일 업로드
@@ -134,7 +137,43 @@ public class ProjectServiceImpl implements ProjectService {
     public Page<ResponseProject.getMyProject> findProjectsByEnterpriseId(Pageable pageable, String enterpriseId){
         Page<Project> projects = projectRepository.findByEnterpriseId(pageable, enterpriseId);
 
-        Page<ResponseProject.getMyProject> getProjects = projects.map((Project project) -> ResponseProject.getMyProject.builder()
+        Page<ResponseProject.getMyProject> getProjects = projects.map((Project project) -> {
+
+            //프로젝트의 dataType과 projectId로 동기 통신을 통해 프로젝트의 라벨링 진행도를 가져온다
+            ResponseLabeling.ProgressRate progressRate = labelingWebClient.getProgressRate(project.getDataType(), project.getId());
+
+            return ResponseProject.getMyProject.builder()
+                    .projectId(project.getId())
+                    .dataType(project.getDataType())
+                    .name(project.getName())
+                    .zipUUID(project.getZipUUID())
+                    .zipUrl(project.getZipUrl())
+                    .description(project.getDescription())
+                    .createdDate(project.getCreatedDate())
+                    .progressRate(progressRate.getProgressRate())
+                    .isAgreed(project.getIsAgreed()).build();
+        });
+
+        return getProjects;
+    }
+
+    /**
+     * projectId를 통해 프로젝트 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseProject.getMyProject findProjectByProjectId(String enterpriseId, Long projectId){
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new NotFoundProjectException());
+
+        //프로젝트에 대한 권한이 없을때
+        if(!project.getEnterpriseId().equals(enterpriseId)){
+            throw new InvalidAccountIdException();
+        }
+
+        //프로젝트의 dataType과 projectId로 동기 통신을 통해 프로젝트의 라벨링 진행도를 가져온다
+        ResponseLabeling.ProgressRate progressRate = labelingWebClient.getProgressRate(project.getDataType(), project.getId());
+
+        return ResponseProject.getMyProject.builder()
                 .projectId(project.getId())
                 .dataType(project.getDataType())
                 .name(project.getName())
@@ -142,8 +181,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .zipUrl(project.getZipUrl())
                 .description(project.getDescription())
                 .createdDate(project.getCreatedDate())
-                .isAgreed(project.getIsAgreed()).build());
-
-        return getProjects;
+                .progressRate(progressRate.getProgressRate())
+                .isAgreed(project.getIsAgreed()).build();
     }
 }

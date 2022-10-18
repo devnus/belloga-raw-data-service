@@ -79,4 +79,18 @@ public class ProjectController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * 기업 사용자가 자신의 프로젝트를 projectId로 조회
+     */
+    @GetMapping("/v1/project/my/{projectId}")
+    public ResponseEntity<CommonResponse> getMyProjectByProjectId(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @PathVariable Long projectId){
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .response(projectService.findProjectByProjectId(enterpriseId, projectId))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

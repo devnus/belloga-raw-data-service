@@ -37,5 +37,6 @@ public class ResponseProject {
         private DataType dataType;
         private LocalDateTime createdDate;
         private String description;
+        private Double progressRate;
     }
 }

@@ -11,4 +11,5 @@ public interface ProjectService {
     boolean agreeProject(RequestProject.ApproveProject approveProject);
     Page<ResponseProject.getProject> findProjects(Pageable pageable);
     Page<ResponseProject.getMyProject> findProjectsByEnterpriseId(Pageable pageable, String enterpriseId);
+    ResponseProject.getMyProject findProjectByProjectId(String enterpriseId, Long projectId);
 }

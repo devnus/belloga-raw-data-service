@@ -1,0 +1,15 @@
+[[api-get-my-project-by-id]]
+== 기업 사용자의 프로젝트 id별 조회 API
+기업 사용자가 자신이 의뢰한 프로젝트를 id로 조회합니다
+
+====== 요청 형식
+include::{snippets}/get-my-project-by-id/http-request.adoc[]
+====== Request Body
+include::{snippets}/get-my-project-by-id/request-body.adoc[]
+====== 응답 형식
+include::{snippets}/get-my-project-by-id/http-response.adoc[]
+include::{snippets}/get-my-project-by-id/response-fields.adoc[]
+====== Response Body
+include::{snippets}/get-my-project-by-id/response-body.adoc[]
+====== Try with curl
+include::{snippets}/get-my-project-by-id/curl-request.adoc[]

@@ -196,6 +196,7 @@ class ProjectControllerTest {
                                 fieldWithPath("response.content.[].dataType").description("프로젝트 데이터 타입"),
                                 fieldWithPath("response.content.[].createdDate").description("프로젝트가 만들어진 시간"),
                                 fieldWithPath("response.content.[].description").description("프로젝트 설명"),
+                                fieldWithPath("response.content.[].progressRate").description("해당 프로젝트의 라벨링 진행도"),
 
                                 fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
                                 fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),
@@ -216,6 +217,43 @@ class ProjectControllerTest {
                                 fieldWithPath("response.number").description("number"),
                                 fieldWithPath("response.first").description("first"),
                                 fieldWithPath("response.empty").description("empty"),
+
+                                fieldWithPath("error").description("error 발생 시 에러 정보")
+                        )
+                ));
+
+    }
+
+    @Test
+    void getMyProjectByProjectIdTest() throws Exception {
+
+        // given
+        String enterpriseId = "enterprise-account-id";
+        Long projectId = 1L;
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/my/{projectId}",projectId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("enterprise-id", enterpriseId)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+
+                //docs
+                .andDo(document("get-my-project-by-id",
+                        responseFields(
+                                fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
+                                fieldWithPath("dateTime").description("response time"),
+                                fieldWithPath("success").description("정상 응답 여부"),
+                                fieldWithPath("response.projectId").description("프로젝트 id"),
+                                fieldWithPath("response.name").description("프로젝트 이름"),
+                                fieldWithPath("response.isAgreed").description("프로젝트 승인 여부"),
+                                fieldWithPath("response.zipUUID").description("프로젝트 제출 zip uuid"),
+                                fieldWithPath("response.zipUrl").description("프로젝트 제출 zip url"),
+                                fieldWithPath("response.dataType").description("프로젝트 데이터 타입"),
+                                fieldWithPath("response.createdDate").description("프로젝트가 만들어진 시간"),
+                                fieldWithPath("response.description").description("프로젝트 설명"),
+                                fieldWithPath("response.progressRate").description("해당 프로젝트의 라벨링 진행도"),
 
                                 fieldWithPath("error").description("error 발생 시 에러 정보")
                         )

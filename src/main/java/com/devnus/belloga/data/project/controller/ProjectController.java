@@ -6,6 +6,8 @@ import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.project.dto.RequestProject;
 import com.devnus.belloga.data.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
 public class ProjectController {
+    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
     private final ProjectService projectService;
 
     /**
@@ -71,7 +74,7 @@ public class ProjectController {
      */
     @GetMapping("/v1/project/my")
     public ResponseEntity<CommonResponse> getMyProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, Pageable pageable){
-
+        logger.info("내 프로젝트 조회 시도: " + enterpriseId);
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(projectService.findProjectsByEnterpriseId(pageable, enterpriseId))

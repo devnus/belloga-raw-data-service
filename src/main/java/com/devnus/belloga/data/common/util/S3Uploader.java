@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -60,15 +61,13 @@ public class S3Uploader {
         metadata.setContentType(multipartFile.getContentType());
         metadata.setContentLength(multipartFile.getSize());
 
-        File file = new File(multipartFile.getOriginalFilename());
-
         try {
-            multipartFile.transferTo(file); // MultipartFile to File
-            amazonS3Client.putObject(bucket,fileName, file); //S3에 업로드
+            InputStream inputStream = multipartFile.getInputStream();
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            //amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, zipInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         }catch (IOException e) {
             throw new S3UploadException(e);
-        } finally {
-            file.delete(); // S3 업로드 후, local zip 파일 삭제
         }
 
         return amazonS3Client.getUrl(bucket, fileName).toString();

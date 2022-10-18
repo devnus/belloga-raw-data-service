@@ -113,12 +113,12 @@ public class ProjectServiceImpl implements ProjectService {
         Page<ResponseProject.getProject> getProjects = projects.map((Project project) -> {
 
             //enterpriseId로 동기 통신을 통해 기업 사용자 정보를 가져온다
-            String enterpriseName = userWebClient.getEnterpriseInfo(project.getEnterpriseId()).getName();
+            //String enterpriseName = userWebClient.getEnterpriseInfo(project.getEnterpriseId()).getName();
 
             return ResponseProject.getProject.builder()
                     .projectId(project.getId())
                     .dataType(project.getDataType())
-                    .enterpriseName(enterpriseName)
+                    .enterpriseName("enterpriseName")
                     .name(project.getName())
                     .zipUUID(project.getZipUUID())
                     .zipUrl(project.getZipUrl())

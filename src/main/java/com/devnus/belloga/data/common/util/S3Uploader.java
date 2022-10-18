@@ -61,7 +61,7 @@ public class S3Uploader {
         metadata.setContentType(multipartFile.getContentType());
         metadata.setContentLength(multipartFile.getSize());
 
-        try {t
+        try {
             InputStream inputStream = multipartFile.getInputStream();
             ZipInputStream zipInputStream = new ZipInputStream(inputStream);
             //amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, zipInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));

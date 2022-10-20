@@ -2,10 +2,7 @@ package com.devnus.belloga.data.common.exception;
 
 import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.common.dto.ErrorResponse;
-import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
-import com.devnus.belloga.data.common.exception.error.InvalidExtensionException;
-import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
-import com.devnus.belloga.data.common.exception.error.S3UploadException;
+import com.devnus.belloga.data.common.exception.error.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -95,5 +92,27 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    /**
+     * 프로젝트를 승인할 수 없을때
+     */
+    @ExceptionHandler(InvalidProjectAgreeException.class)
+    protected ResponseEntity<CommonResponse> handleInvalidProjectAgreeException(InvalidProjectAgreeException ex) {
+        ErrorCode errorCode = ErrorCode.INVALID_PROJECT_AGREE_EXCEPTION;
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .code(errorCode.getCode())
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
 
 }

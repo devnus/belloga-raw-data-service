@@ -2,7 +2,6 @@ package com.devnus.belloga.data.project.service;
 
 import com.devnus.belloga.data.common.dto.ResponseS3;
 import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
-import com.devnus.belloga.data.common.exception.error.InvalidExtensionException;
 import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
 import com.devnus.belloga.data.common.util.S3Finder;
 import com.devnus.belloga.data.common.util.S3Uploader;
@@ -17,15 +16,14 @@ import com.devnus.belloga.data.raw.dto.EventRawData;
 import com.devnus.belloga.data.raw.event.RawDataProducer;
 import com.devnus.belloga.data.raw.repository.RawDataRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,32 +38,41 @@ public class ProjectServiceImpl implements ProjectService {
     private final LabelingWebClient labelingWebClient;
 
     /**
-     * project 생성하고, S3에 zip 파일 업로드
+     * S3에 생성할 프로젝트의 파일명 생성후 프로젝트 생성
      */
     @Override
     @Transactional
-    public boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject, MultipartFile multipartFile){
+    public boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject){
 
-        //multipartFile zip 확장자인지 확인
-        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-        if(!extension.equals("zip")){
-            throw new InvalidExtensionException("zip 파일이 아닙니다");
-        }
-
-        //S3에 zip 파일 업로드
-        List<String> uploadResponse = s3Uploader.upload(multipartFile, "org");
-        String zipUUID = uploadResponse.get(0);
-        String zipUrl = uploadResponse.get(1);
+        //해당 프로젝트에 업로드될 파일명 생성
+        String zipUUID = UUID.randomUUID().toString() + ".zip";
 
         projectRepository.save(Project.builder()
                 .dataType(registerProject.getDataType())
                 .enterpriseId(enterpriseId)
                 .name(registerProject.getName())
-                .description(registerProject.getDescription())
                 .zipUUID(zipUUID)
-                .zipUrl(zipUrl).build());
+                .description(registerProject.getDescription()).build());
 
         return true;
+    }
+
+    /**
+     * 해당 프로젝트의 Pre Signed URL 생성
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseProject.getUrl getPreSignedUrl(String enterpriseId, Long projectId){
+
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new NotFoundProjectException());
+
+        if(!project.getEnterpriseId().equals(enterpriseId)){
+            throw new InvalidAccountIdException();
+        }
+
+        String preSignedUrl = s3Uploader.getPreSignedUrl("org",project.getZipUUID());
+
+        return ResponseProject.getUrl.builder().Url(preSignedUrl).build();
     }
 
     /**
@@ -75,6 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public boolean agreeProject(RequestProject.ApproveProject approveProject){
         Project project = projectRepository.findById(approveProject.getProjectId()).orElseThrow(() -> new NotFoundProjectException());
+
         List<ResponseS3.S3File> s3Files = s3Finder.findFiles("org", project.getZipUUID());
 
         //project 버킷의 파일 리스트를 가져와서 DB에 저장 및 전처리 마이크로서비스로 전달
@@ -113,12 +121,12 @@ public class ProjectServiceImpl implements ProjectService {
         Page<ResponseProject.getProject> getProjects = projects.map((Project project) -> {
 
             //enterpriseId로 동기 통신을 통해 기업 사용자 정보를 가져온다
-            //String enterpriseName = userWebClient.getEnterpriseInfo(project.getEnterpriseId()).getName();
+            String enterpriseName = userWebClient.getEnterpriseInfo(project.getEnterpriseId()).getName();
 
             return ResponseProject.getProject.builder()
                     .projectId(project.getId())
                     .dataType(project.getDataType())
-                    .enterpriseName("enterpriseName")
+                    .enterpriseName(enterpriseName)
                     .name(project.getName())
                     .zipUUID(project.getZipUUID())
                     .zipUrl(project.getZipUrl())

@@ -39,4 +39,12 @@ public class ResponseProject {
         private String description;
         private Double progressRate;
     }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getUrl {
+        private String Url;
+    }
 }

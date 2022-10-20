@@ -15,7 +15,7 @@ CREATE TABLE project (
     is_agreed BOOLEAN NOT NULL,
     enterprise_id VARCHAR(255) NOT NULL,
     zip_uuid VARCHAR(255) NOT NULL,
-    zip_url VARCHAR(255) NOT NULL,
+    zip_url VARCHAR(255),
     description VARCHAR(255) NOT NULL,
     created_date TIMESTAMP,
     last_modified_date TIMESTAMP,

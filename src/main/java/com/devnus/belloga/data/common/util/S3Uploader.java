@@ -1,25 +1,24 @@
 package com.devnus.belloga.data.common.util;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.Headers;
+import com.amazonaws.services.s3.model.*;
 import com.devnus.belloga.data.common.exception.error.S3UploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.zip.ZipInputStream;
 
 
 /**
@@ -33,6 +32,44 @@ public class S3Uploader {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    /**
+     * Pre-SignedURL 생성
+     * bucket 버킷이름, prefix 디렉터리 이름, fileName 업로드하는 파일 명
+     */
+    public String getPreSignedUrl(String prefix, String fileName) {
+
+        if (!prefix.equals("")) {
+            fileName = prefix + "/" + fileName;
+        }
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
+        URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+        return url.toString();
+    }
+
+    /**
+     * PreSignedUrl 생성
+     */
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String fileName) {
+
+        //유효기간 설정
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 2; //2분
+        expiration.setTime(expTimeMillis);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, fileName)
+                        .withMethod(HttpMethod.PUT)
+                        .withExpiration(expiration);
+
+        generatePresignedUrlRequest.addRequestParameter(
+                Headers.S3_CANNED_ACL,
+                CannedAccessControlList.PublicRead.toString());
+        return generatePresignedUrlRequest;
+    }
 
     /**
      * upload 메서드를 통해 uploadFile을 S3 dirName 경로에 저장한다.
@@ -63,8 +100,6 @@ public class S3Uploader {
 
         try {
             InputStream inputStream = multipartFile.getInputStream();
-            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-            //amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, zipInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         }catch (IOException e) {
             throw new S3UploadException(e);

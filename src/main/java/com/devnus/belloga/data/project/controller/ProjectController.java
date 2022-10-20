@@ -10,10 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -30,16 +28,31 @@ public class ProjectController {
     /**
      * 프로젝트 생성
      */
-    @PostMapping(value="/v1/project", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<CommonResponse> registerProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @RequestPart(value="project") @Valid RequestProject.RegisterProject registerProject, @RequestPart(value="upload", required = true) MultipartFile multipartFile) {
+    @PostMapping(value="/v1/project")
+    public ResponseEntity<CommonResponse> registerProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId,  @RequestBody @Valid RequestProject.RegisterProject registerProject) {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(projectService.saveProject(enterpriseId, registerProject, multipartFile))
+                .response(projectService.saveProject(enterpriseId, registerProject))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * 해당 프로젝트의 Pre-SignedURL 요청
+     */
+    @GetMapping("/v1/project/{projectId}/url")
+    public ResponseEntity<CommonResponse> requestPreSignedURL(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @PathVariable Long projectId){
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .response(projectService.getPreSignedUrl(enterpriseId, projectId))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     /**
      * 프로젝트 승인
@@ -72,9 +85,9 @@ public class ProjectController {
     /**
      * 기업 사용자가 자신이 생성한 프로젝트 리스트 조회
      */
-    @GetMapping("/v1/project/my")
-    public ResponseEntity<CommonResponse> getMyProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, Pageable pageable){
-        logger.info("내 프로젝트 조회 시도: " + enterpriseId);
+    @GetMapping("/v1/user/project")
+    public ResponseEntity<CommonResponse> getUserProject(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, Pageable pageable){
+
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(projectService.findProjectsByEnterpriseId(pageable, enterpriseId))
@@ -86,8 +99,8 @@ public class ProjectController {
     /**
      * 기업 사용자가 자신의 프로젝트를 projectId로 조회
      */
-    @GetMapping("/v1/project/my/{projectId}")
-    public ResponseEntity<CommonResponse> getMyProjectByProjectId(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @PathVariable Long projectId){
+    @GetMapping("/v1/user/project/{projectId}")
+    public ResponseEntity<CommonResponse> getUserProjectByProjectId(@GetAccountIdentification(role = UserRole.ENTERPRISE) String enterpriseId, @PathVariable Long projectId){
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)

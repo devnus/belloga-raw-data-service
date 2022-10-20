@@ -52,6 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .enterpriseId(enterpriseId)
                 .name(registerProject.getName())
                 .zipUUID(zipUUID)
+                .zipUrl(zipUUID)
                 .description(registerProject.getDescription()).build());
 
         return true;

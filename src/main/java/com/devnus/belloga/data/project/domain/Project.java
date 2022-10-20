@@ -45,12 +45,13 @@ public class Project extends BaseTimeEntity {
     }
 
     @Builder
-    public Project(String name, String enterpriseId, String zipUUID, DataType dataType, String description) {
+    public Project(String name, String enterpriseId, String zipUUID, DataType dataType, String description, String zipUrl) {
         this.name = name;
         this.enterpriseId = enterpriseId;
         this.dataType = dataType;
         this.isAgreed = false;
         this.zipUUID = zipUUID;
         this.description = description;
+        this.zipUrl = zipUrl;
     }
 }

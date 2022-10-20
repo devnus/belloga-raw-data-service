@@ -1,7 +1,5 @@
 package com.devnus.belloga.data.project.controller;
 
-import com.devnus.belloga.data.project.dto.RequestProject;
-import com.devnus.belloga.data.raw.domain.DataType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +8,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +19,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,17 +42,17 @@ class ProjectControllerTest {
     void registerProjectTest() throws Exception {
 
         //given
+        Map<String, String> input = new HashMap<>();
+        input.put("name", "test_name");
+        input.put("dataType", "OCR");
+        input.put("description", "test_description");
+
         String enterpriseId = "enterprise-account-id";
-        RequestProject.RegisterProject requestRegisterProject = RequestProject.RegisterProject.builder().dataType(DataType.OCR).name("test_project").description("test_description").build();
-        MockMultipartFile registerProject = new MockMultipartFile("project", "project", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(requestRegisterProject).getBytes(StandardCharsets.UTF_8));
-        //Mock zip 파일
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("upload", "upload_file.zip", "application/zip", "test_data".getBytes());
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/project/v1/project")
-                        .file(mockMultipartFile)
-                        .file(registerProject)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input))
                         .header("enterprise-id", enterpriseId) // 라벨링 수행하는 유저의 식별아이디, api gateway에서 받아온다.
                 )
                 //then
@@ -67,7 +61,11 @@ class ProjectControllerTest {
 
                 //docs
                 .andDo(document("register-project",
-                        requestParts(partWithName("upload").description("첨부 이미지"), partWithName("project").description("프로젝트 정보")),
+                        requestFields(
+                                fieldWithPath("name").description("생성하려는 프로젝트 이름"),
+                                fieldWithPath("dataType").description("생성하는 프로젝트 타입"),
+                                fieldWithPath("description").description("생성하려는 프로젝트 설명")
+                        ),
                         responseFields(
                                 fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
                                 fieldWithPath("dateTime").description("response time"),
@@ -111,6 +109,34 @@ class ProjectControllerTest {
                         )
                 ))
                 .andExpect(jsonPath("$.success", is(true)));
+    }
+
+    @Test
+    void requestPreSignedUrlTest() throws Exception {
+
+        // given
+        String enterpriseId = "enterprise-account-id";
+        Long projectId = 1L;
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/{projectId}/url",projectId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("enterprise-id", enterpriseId)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+
+                //docs
+                .andDo(document("request-pre-signed-url",
+                        responseFields(
+                                fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
+                                fieldWithPath("dateTime").description("response time"),
+                                fieldWithPath("success").description("정상 응답 여부"),
+                                fieldWithPath("response.url").description("pre-signed-url"),
+                                fieldWithPath("error").description("error 발생 시 에러 정보")
+                        )
+                ));
+
     }
 
     @Test
@@ -175,7 +201,7 @@ class ProjectControllerTest {
         String enterpriseId = "enterprise-account-id";
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/my")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/user/project")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("enterprise-id", enterpriseId)
         )
@@ -232,7 +258,7 @@ class ProjectControllerTest {
         Long projectId = 1L;
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/my/{projectId}",projectId)
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/user/project/{projectId}",projectId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("enterprise-id", enterpriseId)
                 )

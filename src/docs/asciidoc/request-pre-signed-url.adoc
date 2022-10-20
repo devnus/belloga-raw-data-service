@@ -1,0 +1,15 @@
+[[request-pre-signed-url]]
+== Pre-Signed URL 요청 API
+해당 프로젝트에 zip파일을 업로드할 pre-signed url을 요청한
+
+====== 요청 형식
+include::{snippets}/request-pre-signed-url/http-request.adoc[]
+====== Request Parts
+include::{snippets}/request-pre-signed-url/request-body.adoc[]
+====== 응답 형식
+include::{snippets}/request-pre-signed-url/http-response.adoc[]
+include::{snippets}/request-pre-signed-url/response-fields.adoc[]
+====== Response Body
+include::{snippets}/request-pre-signed-url/response-body.adoc[]
+====== Try with curl
+include::{snippets}/request-pre-signed-url/curl-request.adoc[]

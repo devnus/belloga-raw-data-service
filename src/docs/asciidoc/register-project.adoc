@@ -5,7 +5,7 @@
 ====== 요청 형식
 include::{snippets}/register-project/http-request.adoc[]
 ====== Request Parts
-include::{snippets}/register-project/request-parts.adoc[]
+include::{snippets}/register-project/request-body.adoc[]
 ====== 응답 형식
 include::{snippets}/register-project/http-response.adoc[]
 include::{snippets}/register-project/response-fields.adoc[]

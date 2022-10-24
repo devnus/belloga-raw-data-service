@@ -70,7 +70,7 @@ class ProjectControllerTest {
                                 fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
                                 fieldWithPath("dateTime").description("response time"),
                                 fieldWithPath("success").description("정상 응답 여부"),
-                                fieldWithPath("response").description("등록이 잘 되었는지에 대한 boolean"),
+                                fieldWithPath("response.projectId").description("생성한 프로젝트 ID"),
                                 fieldWithPath("error").description("error 발생 시 에러 정보")
                         )
                 ))

@@ -42,12 +42,12 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject){
+    public ResponseProject.registerProject saveProject(String enterpriseId, RequestProject.RegisterProject registerProject){
 
         //해당 프로젝트에 업로드될 파일명 생성
         String zipUUID = UUID.randomUUID().toString() + ".zip";
 
-        projectRepository.save(Project.builder()
+        Project project = projectRepository.save(Project.builder()
                 .dataType(registerProject.getDataType())
                 .enterpriseId(enterpriseId)
                 .name(registerProject.getName())
@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .zipUrl(zipUUID)
                 .description(registerProject.getDescription()).build());
 
-        return true;
+        return ResponseProject.registerProject.builder().projectId(project.getId()).build();
     }
 
     /**

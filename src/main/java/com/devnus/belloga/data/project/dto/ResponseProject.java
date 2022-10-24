@@ -47,4 +47,12 @@ public class ResponseProject {
     public static class getUrl {
         private String Url;
     }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class registerProject {
+        private Long projectId;
+    }
 }

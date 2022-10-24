@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProjectService {
-    boolean saveProject(String enterpriseId, RequestProject.RegisterProject registerProject);
+    ResponseProject.registerProject saveProject(String enterpriseId, RequestProject.RegisterProject registerProject);
     boolean agreeProject(RequestProject.ApproveProject approveProject);
     Page<ResponseProject.getProject> findProjects(Pageable pageable);
     Page<ResponseProject.getMyProject> findProjectsByEnterpriseId(Pageable pageable, String enterpriseId);

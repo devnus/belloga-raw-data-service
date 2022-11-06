@@ -29,5 +29,7 @@ public class RequestProject {
     public static class ApproveProject {
         @NotNull
         private Long projectId;
+        @NotNull
+        private boolean agree;
     }
 }

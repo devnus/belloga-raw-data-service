@@ -84,6 +84,11 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean agreeProject(RequestProject.ApproveProject approveProject){
         Project project = projectRepository.findById(approveProject.getProjectId()).orElseThrow(() -> new NotFoundProjectException());
 
+        if(!(approveProject.isAgree())){ //프로젝트 승인 거절일때
+            project.reject();
+            return true;
+        }
+
         List<ResponseS3.S3File> s3Files = s3Finder.findFiles("org", project.getZipUUID());
 
         //project 버킷의 파일 리스트를 가져와서 DB에 저장 및 전처리 마이크로서비스로 전달

@@ -57,7 +57,7 @@ public class ProjectController {
     /**
      * 프로젝트 승인
      */
-    @PostMapping("/v1/project/approve")
+    @PatchMapping("/v1/project/approve")
     public ResponseEntity<CommonResponse> approveProject(@GetAccountIdentification(role = UserRole.ADMIN) String adminId, @RequestBody @Valid RequestProject.ApproveProject approveProject) {
 
         CommonResponse response = CommonResponse.builder()

@@ -84,9 +84,10 @@ class ProjectControllerTest {
         String adminId = "test-admin";
         Map<String, String> input = new HashMap<>();
         input.put("projectId", "1");
+        input.put("agree", "true");
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/project/v1/project/approve")
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/project/v1/project/approve")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input))
                         .header("admin-id", adminId) // 프로젝트를 승인하는 관리자의 id, api gateway에서 받아온다.
@@ -98,7 +99,8 @@ class ProjectControllerTest {
                 //docs
                 .andDo(document("approve-project",
                         requestFields(
-                                fieldWithPath("projectId").description("승인하려는 프로젝트 id")
+                                fieldWithPath("projectId").description("승인하려는 프로젝트 id"),
+                                fieldWithPath("agree").description("프로젝트 승인 동의 또는 비동의")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("logging을 위한 api response 고유 ID"),

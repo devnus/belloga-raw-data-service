@@ -132,6 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .zipUUID(project.getZipUUID())
                     .zipUrl(project.getZipUrl())
                     .description(project.getDescription())
+                    .createDate(project.getCreatedDate())
                     .isAgreed(project.getIsAgreed()).build();
         });
 

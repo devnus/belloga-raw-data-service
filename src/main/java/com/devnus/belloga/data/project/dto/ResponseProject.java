@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class ResponseProject {
     @Builder
@@ -22,6 +23,7 @@ public class ResponseProject {
         private String zipUrl;
         private DataType dataType;
         private String description;
+        private LocalDateTime createDate;
     }
 
     @Builder

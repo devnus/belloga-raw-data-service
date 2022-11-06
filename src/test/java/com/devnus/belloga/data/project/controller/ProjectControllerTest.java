@@ -167,6 +167,7 @@ class ProjectControllerTest {
                                 fieldWithPath("response.content.[].zipUrl").description("프로젝트 제출 zip url"),
                                 fieldWithPath("response.content.[].dataType").description("프로젝트 데이터 타입"),
                                 fieldWithPath("response.content.[].description").description("프로젝트 데이터 타입"),
+                                fieldWithPath("response.content.[].createDate").description("프로젝트 생성일"),
 
                                 fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
                                 fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),

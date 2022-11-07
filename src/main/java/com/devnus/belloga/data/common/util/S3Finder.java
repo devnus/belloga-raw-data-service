@@ -23,6 +23,8 @@ public class S3Finder {
 
     @Value("${cloud.aws.s3.unzip-bucket}")
     private String bucket;
+    @Value("${cloud.aws.s3.dir}")
+    private String dir;
 
     /**
      * 파일 경로를 통해 url 추출
@@ -34,10 +36,11 @@ public class S3Finder {
     /**
      * 파일 디렉터리(path)에 속한 파일 목록 반환
      */
-    public List<ResponseS3.S3File> findFiles(String dirName, String zipUUID){
+    public List<ResponseS3.S3File> findFiles(String zipUUID){
 
         List<ResponseS3.S3File> files = new ArrayList<>();
-        String path = dirName + "/" + zipUUID;
+
+        String path = dir + "/" + zipUUID;
 
         ObjectListing objectListing = amazonS3Client.listObjects(new ListObjectsRequest()
                 .withBucketName(bucket)

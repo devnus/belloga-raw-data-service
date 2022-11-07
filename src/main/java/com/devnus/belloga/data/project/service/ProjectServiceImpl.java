@@ -71,7 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new InvalidAccountIdException();
         }
 
-        String preSignedUrl = s3Uploader.getPreSignedUrl("org",project.getZipUUID());
+        String preSignedUrl = s3Uploader.getPreSignedUrl(project.getZipUUID());
 
         return ResponseProject.getUrl.builder().Url(preSignedUrl).build();
     }
@@ -89,7 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
             return true;
         }
 
-        List<ResponseS3.S3File> s3Files = s3Finder.findFiles("org", project.getZipUUID());
+        List<ResponseS3.S3File> s3Files = s3Finder.findFiles(project.getZipUUID());
 
         //project 버킷의 파일 리스트를 가져와서 DB에 저장 및 전처리 마이크로서비스로 전달
         for(ResponseS3.S3File s3File : s3Files){

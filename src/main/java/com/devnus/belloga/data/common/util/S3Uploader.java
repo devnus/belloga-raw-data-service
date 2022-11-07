@@ -32,18 +32,18 @@ public class S3Uploader {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+    @Value("${cloud.aws.s3.dir}")
+    private String dir;
 
     /**
      * Pre-SignedURL 생성
      * bucket 버킷이름, prefix 디렉터리 이름, fileName 업로드하는 파일 명
      */
-    public String getPreSignedUrl(String prefix, String fileName) {
+    public String getPreSignedUrl(String fileName) {
 
-        if (!prefix.equals("")) {
-            fileName = prefix + "/" + fileName;
-        }
+        String path = dir + "/" + fileName;
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, path);
         URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
 
         return url.toString();

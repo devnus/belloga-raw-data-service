@@ -17,6 +17,7 @@ import com.devnus.belloga.data.raw.event.RawDataProducer;
 import com.devnus.belloga.data.raw.repository.RawDataRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,11 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserWebClient userWebClient;
     private final LabelingWebClient labelingWebClient;
 
+    @Value("${cloud.aws.s3.zip-url}")
+    private String zipUrl;
+    @Value("${cloud.aws.s3.dir}")
+    private String dir;
+
     /**
      * S3에 생성할 프로젝트의 파일명 생성후 프로젝트 생성
      */
@@ -52,7 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .enterpriseId(enterpriseId)
                 .name(registerProject.getName())
                 .zipUUID(zipUUID)
-                .zipUrl(zipUUID)
+                .zipUrl(zipUrl + "/" + dir + "/" + zipUUID)
                 .description(registerProject.getDescription()).build());
 
         return ResponseProject.registerProject.builder().projectId(project.getId()).build();

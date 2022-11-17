@@ -1,44 +1,56 @@
 package com.devnus.belloga.data.project.controller;
 
+import com.devnus.belloga.data.project.dto.RequestProject;
+import com.devnus.belloga.data.project.dto.ResponseProject;
+import com.devnus.belloga.data.project.service.ProjectService;
+import com.devnus.belloga.data.raw.domain.DataType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles(profiles = "test")
-@SpringBootTest
-@AutoConfigureMockMvc
+import static org.mockito.BDDMockito.given;
+
 @AutoConfigureRestDocs
-@EmbeddedKafka(
-        brokerProperties = {
-                "listeners=PLAINTEXT://localhost:9092"
-        },
-        ports = { 9092 })
+@ActiveProfiles("test")
+@WebMvcTest
+@MockBean(JpaMetamodelMappingContext.class)
 class ProjectControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private ProjectService projectService;
 
     @Test
+    @DisplayName("프로젝트 생성 API 성공 테스트")
     void registerProjectTest() throws Exception {
 
         //given
@@ -46,11 +58,11 @@ class ProjectControllerTest {
         input.put("name", "test_name");
         input.put("dataType", "OCR");
         input.put("description", "test_description");
-
         String enterpriseId = "enterprise-account-id";
+        when(projectService.saveProject(Mockito.any(), Mockito.any())).thenReturn(ResponseProject.registerProject.builder().projectId(1L).build());
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/project/v1/project")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/project/v1/project")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input))
                         .header("enterprise-id", enterpriseId) // 라벨링 수행하는 유저의 식별아이디, api gateway에서 받아온다.
@@ -78,6 +90,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @DisplayName("프로젝트 승인 API 성공 테스트")
     void approveProjectTest() throws Exception {
 
         //given
@@ -85,6 +98,7 @@ class ProjectControllerTest {
         Map<String, String> input = new HashMap<>();
         input.put("projectId", "1");
         input.put("agree", "true");
+        given(projectService.agreeProject(Mockito.any(RequestProject.ApproveProject.class))).willReturn(true);
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/project/v1/project/approve")
@@ -114,11 +128,13 @@ class ProjectControllerTest {
     }
 
     @Test
+    @DisplayName("pre-signed url 요청 API 성공 테스트")
     void requestPreSignedUrlTest() throws Exception {
 
         // given
         String enterpriseId = "enterprise-account-id";
         Long projectId = 1L;
+        given(projectService.getPreSignedUrl(Mockito.any(),Mockito.any())).willReturn(ResponseProject.getUrl.builder().Url("pre_sign_url").build());
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project/{projectId}/url",projectId)
@@ -142,10 +158,34 @@ class ProjectControllerTest {
     }
 
     @Test
+    @DisplayName("관리자의 프로젝트 조회 API 성공 테스트")
     void getProjectTest() throws Exception {
 
         // given
         String adminId = "test-admin";
+        List<ResponseProject.getProject> list = new ArrayList<>();
+        list.add(ResponseProject.getProject.builder()
+                .dataType(DataType.OCR)
+                .projectId(1L)
+                .description("description")
+                .enterpriseName("enterpriseName")
+                .isAgreed(false)
+                .name("name")
+                .zipUrl("zipUrl")
+                .zipUUID("zipUUID")
+                .build());
+        list.add(ResponseProject.getProject.builder()
+                .dataType(DataType.OCR)
+                .projectId(2L)
+                .description("description")
+                .enterpriseName("enterpriseName")
+                .isAgreed(false)
+                .name("name")
+                .zipUrl("zipUrl")
+                .zipUUID("zipUUID")
+                .build());
+        Page<ResponseProject.getProject> pages = new PageImpl<>(list);
+        given(this.projectService.findProjects(Mockito.any(Pageable.class))).willReturn(pages);
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/project")
@@ -171,14 +211,7 @@ class ProjectControllerTest {
                                 fieldWithPath("response.content.[].description").description("프로젝트 데이터 타입"),
                                 fieldWithPath("response.content.[].createDate").description("프로젝트 생성일"),
 
-                                fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.sort.empty").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.pageNumber").description("page number"),
-                                fieldWithPath("response.pageable.pageSize").description("page size"),
-                                fieldWithPath("response.pageable.offset").description("page offset"),
-                                fieldWithPath("response.pageable.paged").description("paged"),
-                                fieldWithPath("response.pageable.unpaged").description("unpaged"),
+                                fieldWithPath("response.pageable").description("페이징 처리 정보"),
                                 fieldWithPath("response.totalPages").description("total pages"),
                                 fieldWithPath("response.totalElements").description("total elements"),
                                 fieldWithPath("response.last").description("last"),
@@ -198,10 +231,34 @@ class ProjectControllerTest {
     }
 
     @Test
+    @DisplayName("자신의 프로젝트 조회 API 성공 테스트")
     void getMyProjectTest() throws Exception {
 
         // given
         String enterpriseId = "enterprise-account-id";
+        List<ResponseProject.getMyProject> list = new ArrayList<>();
+        list.add(ResponseProject.getMyProject.builder()
+                .dataType(DataType.OCR)
+                .projectId(1L)
+                .description("description")
+                .progressRate(1.0)
+                .isAgreed(false)
+                .name("name")
+                .zipUrl("zipUrl")
+                .zipUUID("zipUUID")
+                .build());
+        list.add(ResponseProject.getMyProject.builder()
+                .dataType(DataType.OCR)
+                .projectId(2L)
+                .description("description")
+                .progressRate(1.0)
+                .isAgreed(false)
+                .name("name")
+                .zipUrl("zipUrl")
+                .zipUUID("zipUUID")
+                .build());
+        Page<ResponseProject.getMyProject> pages = new PageImpl<>(list);
+        given(this.projectService.findProjectsByEnterpriseId(Mockito.any(),Mockito.any())).willReturn(pages);
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/user/project")
@@ -227,14 +284,7 @@ class ProjectControllerTest {
                                 fieldWithPath("response.content.[].description").description("프로젝트 설명"),
                                 fieldWithPath("response.content.[].progressRate").description("해당 프로젝트의 라벨링 진행도"),
 
-                                fieldWithPath("response.pageable.sort.unsorted").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.sort.sorted").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.sort.empty").description("페이징 처리 sort 정보"),
-                                fieldWithPath("response.pageable.pageNumber").description("page number"),
-                                fieldWithPath("response.pageable.pageSize").description("page size"),
-                                fieldWithPath("response.pageable.offset").description("page offset"),
-                                fieldWithPath("response.pageable.paged").description("paged"),
-                                fieldWithPath("response.pageable.unpaged").description("unpaged"),
+                                fieldWithPath("response.pageable").description("페이징 처리 정보"),
                                 fieldWithPath("response.totalPages").description("total pages"),
                                 fieldWithPath("response.totalElements").description("total elements"),
                                 fieldWithPath("response.last").description("last"),
@@ -254,11 +304,21 @@ class ProjectControllerTest {
     }
 
     @Test
+    @DisplayName("자신의 프로젝트 ID별 조회 API 성공 테스트")
     void getMyProjectByProjectIdTest() throws Exception {
 
         // given
         String enterpriseId = "enterprise-account-id";
         Long projectId = 1L;
+        when(projectService.findProjectByProjectId(Mockito.any(), Mockito.any())).thenReturn(ResponseProject.getMyProject.builder()
+                .projectId(1L)
+                .progressRate(1.0)
+                .dataType(DataType.OCR)
+                .description("description")
+                .isAgreed(true)
+                .name("name")
+                .zipUrl("zipUrl")
+                .zipUUID("zipUUID").build());
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/project/v1/user/project/{projectId}",projectId)
@@ -274,6 +334,7 @@ class ProjectControllerTest {
                                 fieldWithPath("id").description("logging을 위한 api response 고유 ID"),
                                 fieldWithPath("dateTime").description("response time"),
                                 fieldWithPath("success").description("정상 응답 여부"),
+
                                 fieldWithPath("response.projectId").description("프로젝트 id"),
                                 fieldWithPath("response.name").description("프로젝트 이름"),
                                 fieldWithPath("response.isAgreed").description("프로젝트 승인 여부"),

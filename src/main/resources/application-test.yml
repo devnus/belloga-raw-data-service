@@ -45,7 +45,7 @@ app:
     raw:
       raw-data-upload: raw-data-upload
   web-client:
-    base-url: http://a42e30416f79f4cbc9bb75a1a0e132ed-738c4e9a914338da.elb.ap-northeast-2.amazonaws.com
+    user-service-base-url: http://user-service.default.svc.cluster.local:8080
 
 ## aws S3 관련 정보
 cloud:

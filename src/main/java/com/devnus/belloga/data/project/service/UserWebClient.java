@@ -14,14 +14,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 @RequiredArgsConstructor
 public class UserWebClient {
-    private final WebClient webClient;
+    private final WebClient userServiceWebClient;
     private final ObjectMapper objectMapper;
 
     /**
      * 동기 통신을 통해 accountId로 기업 사용자 정보를 가져온다
      */
     public ResponseUser.EnterpriseInfo getEnterpriseInfo(String accountId) {
-        CommonResponse commonResponse = webClient
+        CommonResponse commonResponse = userServiceWebClient
                 .get()
                 .uri("/api/user/v1/enterprise/{accountId}", accountId)
                 .accept(MediaType.APPLICATION_JSON)

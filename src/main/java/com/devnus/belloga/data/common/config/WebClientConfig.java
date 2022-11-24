@@ -7,13 +7,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class WebClientConfig {
-    @Value("${app.web-client.base-url}")
-    private String BASE_URL;
+    @Value("${app.web-client.user-service-base-url}")
+    private String USER_SERVICE_BASE_URL;
 
-    @Bean
-    public WebClient webClient() {
+    @Bean(name = "userServiceWebClient")
+    public WebClient userServiceWebClient() {
         return WebClient.builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(USER_SERVICE_BASE_URL)
                 .build();
     }
 

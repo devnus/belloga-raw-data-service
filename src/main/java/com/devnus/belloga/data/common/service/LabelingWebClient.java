@@ -1,4 +1,4 @@
-package com.devnus.belloga.data.project.service;
+package com.devnus.belloga.data.common.service;
 
 import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
@@ -15,14 +15,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 @RequiredArgsConstructor
 public class LabelingWebClient {
-    private final WebClient webClient;
+    private final WebClient labelingServiceWebClient;
     private final ObjectMapper objectMapper;
 
     /**
      * 동기 통신을 통해 dataType, projectId 로 라벨링 진행도를 확인한다
      */
     public ResponseLabeling.ProgressRate getProgressRate(DataType dataType, Long projectId) {
-        CommonResponse commonResponse = webClient
+        CommonResponse commonResponse = labelingServiceWebClient
                 .get()
                 .uri("/api/data/v1/target/{dataType}/projects/{projectId}", dataType, projectId)
                 .accept(MediaType.APPLICATION_JSON)

@@ -3,6 +3,8 @@ package com.devnus.belloga.data.project.service;
 import com.devnus.belloga.data.common.dto.ResponseS3;
 import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
 import com.devnus.belloga.data.common.exception.error.NotFoundProjectException;
+import com.devnus.belloga.data.common.service.LabelingWebClient;
+import com.devnus.belloga.data.common.service.UserWebClient;
 import com.devnus.belloga.data.common.util.S3Finder;
 import com.devnus.belloga.data.common.util.S3Uploader;
 import com.devnus.belloga.data.project.domain.Project;

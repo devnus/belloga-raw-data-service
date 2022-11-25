@@ -46,6 +46,8 @@ app:
       raw-data-upload: raw-data-upload
   web-client:
     user-service-base-url: http://user-service.default.svc.cluster.local:8080
+    labeling-service-base-url: http://labeling-service.default.svc.cluster.local:8080
+
 
 ## aws S3 관련 정보
 cloud:

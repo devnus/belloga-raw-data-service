@@ -1,4 +1,4 @@
-package com.devnus.belloga.data.project.service;
+package com.devnus.belloga.data.common.service;
 
 import com.devnus.belloga.data.common.dto.CommonResponse;
 import com.devnus.belloga.data.common.exception.error.InvalidAccountIdException;
